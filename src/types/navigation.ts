@@ -6,4 +6,5 @@ export type NavKey =
   | "inventory"
   | "discounts"
   | "loyalty"
-  | "ai";
+  | "ai"
+  | "data";

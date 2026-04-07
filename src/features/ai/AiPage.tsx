@@ -4,7 +4,7 @@ export function AiPage() {
   return (
     <PagePlaceholder
       title="AI Analyst"
-      description="Natural-language Q&A over your uploaded dashboard data will be added after the core data layer is stable."
+      description="AI analysis page is parked for now."
     />
   );
 }

@@ -7,16 +7,12 @@
     "module": "ESNext",
     "types": ["vite/client"],
     "skipLibCheck": true,
-
-    /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
-
-    /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -24,5 +20,26 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": [
+    "src/main.tsx",
+    "src/App.tsx",
+    "src/styles/**/*",
+    "src/types/data.ts",
+    "src/types/navigation.ts",
+    "src/components/layout/Sidebar.tsx",
+    "src/components/layout/TopBar.tsx",
+    "src/components/ui/PagePlaceholder.tsx",
+    "src/features/dashboard/DashboardPage.tsx",
+    "src/features/data-import/DataImportPage.tsx",
+    "src/features/calendar/CalendarPage.tsx",
+    "src/features/transactions/TransactionsPage.tsx",
+    "src/features/labor/LaborPage.tsx",
+    "src/features/inventory/InventoryPage.tsx",
+    "src/features/discounts/DiscountsPage.tsx",
+    "src/features/loyalty/LoyaltyPage.tsx",
+    "src/features/ai/AiPage.tsx",
+    "src/lib/data/storage.ts",
+    "src/lib/data/importers/sales.ts",
+    "src/lib/data/importers/labor.ts"
+  ]
 }

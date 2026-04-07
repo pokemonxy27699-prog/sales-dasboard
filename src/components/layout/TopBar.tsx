@@ -6,6 +6,7 @@ type TopBarProps = {
 
 const pageTitles: Record<NavKey, string> = {
   dashboard: "Dashboard",
+  data: "Data Import",
   calendar: "Calendar Analytics",
   transactions: "Transactions",
   labor: "Labor",

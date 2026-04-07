@@ -1,14 +1,15 @@
 import { useMemo, useState } from "react";
 import { Sidebar } from "./components/layout/Sidebar";
 import { TopBar } from "./components/layout/TopBar";
-import { AiPage } from "./features/ai/AiPage";
-import { CalendarPage } from "./features/calendar/CalendarPage";
 import { DashboardPage } from "./features/dashboard/DashboardPage";
-import { DiscountsPage } from "./features/discounts/DiscountsPage";
-import { InventoryPage } from "./features/inventory/InventoryPage";
-import { LaborPage } from "./features/labor/LaborPage";
-import { LoyaltyPage } from "./features/loyalty/LoyaltyPage";
+import { DataImportPage } from "./features/data-import/DataImportPage";
+import { CalendarPage } from "./features/calendar/CalendarPage";
 import { TransactionsPage } from "./features/transactions/TransactionsPage";
+import { LaborPage } from "./features/labor/LaborPage";
+import { InventoryPage } from "./features/inventory/InventoryPage";
+import { DiscountsPage } from "./features/discounts/DiscountsPage";
+import { LoyaltyPage } from "./features/loyalty/LoyaltyPage";
+import { AiPage } from "./features/ai/AiPage";
 import type { NavKey } from "./types/navigation";
 
 function App() {
@@ -18,6 +19,8 @@ function App() {
     switch (activePage) {
       case "dashboard":
         return <DashboardPage />;
+      case "data":
+        return <DataImportPage />;
       case "calendar":
         return <CalendarPage />;
       case "transactions":

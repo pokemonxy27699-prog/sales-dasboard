@@ -7,13 +7,14 @@ type SidebarProps = {
 
 const items: Array<{ key: NavKey; label: string }> = [
   { key: "dashboard", label: "Dashboard" },
+  { key: "data", label: "Data Import" },
   { key: "calendar", label: "Calendar Analytics" },
   { key: "transactions", label: "Transactions" },
   { key: "labor", label: "Labor" },
   { key: "inventory", label: "Inventory" },
   { key: "discounts", label: "Discounts" },
   { key: "loyalty", label: "Loyalty" },
-  { key: "ai", label: "AI Analyst" },
+  { key: "ai", label: "AI Analyst" }
 ];
 
 export function Sidebar({ active, onChange }: SidebarProps) {
@@ -41,7 +42,7 @@ export function Sidebar({ active, onChange }: SidebarProps) {
                 "w-full rounded-2xl px-4 py-3 text-left text-sm transition",
                 isActive
                   ? "bg-cyan-400/15 text-white ring-1 ring-cyan-300/30"
-                  : "text-slate-300 hover:bg-white/5 hover:text-white",
+                  : "text-slate-300 hover:bg-white/5 hover:text-white"
               ].join(" ")}
             >
               {item.label}
@@ -55,7 +56,7 @@ export function Sidebar({ active, onChange }: SidebarProps) {
           Next
         </p>
         <p className="mt-2 text-sm text-amber-50/90">
-          Add filters, drilldowns, and real data contracts.
+          Import the full sales folder, then wire selectors into dashboard and calendar.
         </p>
       </div>
     </aside>
