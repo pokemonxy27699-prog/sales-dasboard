@@ -12,6 +12,8 @@ function normalizeHeader(value: CellValue): string {
 }
 
 function toNumber(value: CellValue): number {
+  if (typeof value === "number") return Number.isFinite(value) ? value : 0;
+
   const cleaned = String(value ?? "")
     .replace(/\$/g, "")
     .replace(/,/g, "")
@@ -51,16 +53,30 @@ function parseDateFromFileName(relativePath: string, fileName: string): string {
   return formatDateKey(parsed);
 }
 
-function parseHour(value: CellValue): number | null {
-  const text = String(value ?? "").trim();
+function parseExcelHour(value: CellValue): number | null {
+  if (value == null || value === "") return null;
+
+  if (typeof value === "number") {
+    const parsed = XLSX.SSF.parse_date_code(value);
+    if (parsed && Number.isFinite(parsed.H)) {
+      const hour = parsed.H;
+      return hour >= 0 && hour <= 23 ? hour : null;
+    }
+  }
+
+  const text = String(value).trim();
   if (!text) return null;
 
-  const normalized = text.toUpperCase().replace(/\s+/g, " ");
-  const match = normalized.match(/(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)?/i);
+  // Handles:
+  // 04/01/2026 13:00:00
+  // 4/1/26 11:00
+  // 11:00 AM
+  // 13:00
+  const match = text.match(/(\d{1,2}):(\d{2})(?::\d{2})?\s*(AM|PM)?/i);
   if (!match) return null;
 
   let hour = Number(match[1]);
-  const meridiem = match[4]?.toUpperCase() ?? "";
+  const meridiem = match[3]?.toUpperCase() ?? "";
 
   if (!Number.isFinite(hour) || hour < 0 || hour > 23) return null;
 
@@ -101,9 +117,12 @@ function buildHeaderMap(headerRow: SheetRow): Record<string, number> {
   return map;
 }
 
-function getCell(row: SheetRow, map: Record<string, number>, key: string): CellValue {
-  const index = map[key];
-  return index === undefined ? "" : row[index];
+function getCell(row: SheetRow, map: Record<string, number>, keys: string[]): CellValue {
+  for (const key of keys) {
+    const index = map[key];
+    if (index !== undefined) return row[index];
+  }
+  return "";
 }
 
 async function fileToArrayBuffer(file: File): Promise<ArrayBuffer> {
@@ -143,9 +162,7 @@ export async function importSalesFolder(files: File[]): Promise<SalesDataset> {
     });
 
     const firstSheetName = workbook.SheetNames[0];
-    if (!firstSheetName) {
-      continue;
-    }
+    if (!firstSheetName) continue;
 
     const sheet = workbook.Sheets[firstSheetName];
     const rows = XLSX.utils.sheet_to_json(sheet, {
@@ -156,9 +173,7 @@ export async function importSalesFolder(files: File[]): Promise<SalesDataset> {
     }) as SheetRow[];
 
     const headerRowIndex = findHeaderRowIndex(rows);
-    if (headerRowIndex === -1) {
-      continue;
-    }
+    if (headerRowIndex === -1) continue;
 
     const headerMap = buildHeaderMap(rows[headerRowIndex]);
 
@@ -170,23 +185,21 @@ export async function importSalesFolder(files: File[]): Promise<SalesDataset> {
         break;
       }
 
-      const hour = parseHour(getCell(row, headerMap, "starthour"));
-      if (hour === null) {
-        continue;
-      }
+      const hour = parseExcelHour(getCell(row, headerMap, ["starthour"]));
+      if (hour === null) continue;
 
       const hourlyRow: SalesHourlyRow = {
         date: dateKey,
         hour,
-        transactionQty: toNumber(getCell(row, headerMap, "transactionqty")),
-        guestCount: toNumber(getCell(row, headerMap, "guestcount")),
-        refundedQty: toNumber(getCell(row, headerMap, "refundedqty")),
-        refundedAmt: toNumber(getCell(row, headerMap, "refundedamt")),
-        itemSalesQty: toNumber(getCell(row, headerMap, "itemsalesqty")),
-        netSalesAmt: toNumber(getCell(row, headerMap, "netsalesamt")),
-        avgTicketTime: toText(getCell(row, headerMap, "avgtickettime")),
-        avgKitchenTime: toText(getCell(row, headerMap, "avgkitchentime")),
-        creditTips: toNumber(getCell(row, headerMap, "credittips")),
+        transactionQty: toNumber(getCell(row, headerMap, ["transactionqty"])),
+        guestCount: toNumber(getCell(row, headerMap, ["guestcount"])),
+        refundedQty: toNumber(getCell(row, headerMap, ["refundedqty"])),
+        refundedAmt: toNumber(getCell(row, headerMap, ["refundedamt"])),
+        itemSalesQty: toNumber(getCell(row, headerMap, ["itemsalesqty"])),
+        netSalesAmt: toNumber(getCell(row, headerMap, ["netsalesamt"])),
+        avgTicketTime: toText(getCell(row, headerMap, ["avgtickettime"])),
+        avgKitchenTime: toText(getCell(row, headerMap, ["avgkitchentime"])),
+        creditTips: toNumber(getCell(row, headerMap, ["credittips"])),
         sourceFileName: file.name,
         sourceRelativePath: relativePath,
       };
