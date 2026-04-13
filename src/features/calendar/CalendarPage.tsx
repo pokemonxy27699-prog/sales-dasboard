@@ -376,10 +376,10 @@ export function CalendarPage() {
             {view === "year"
               ? String(anchorDate.getFullYear())
               : view === "month"
-              ? formatMonthYear(anchorDate)
-              : view === "week"
-              ? `${formatFullDate(startOfWeekMonday(anchorDate))} ? ${formatFullDate(endOfWeekMonday(anchorDate))}`
-              : formatFullDate(anchorDate)}
+                ? formatMonthYear(anchorDate)
+                : view === "week"
+                  ? `${formatFullDate(startOfWeekMonday(anchorDate))} ? ${formatFullDate(endOfWeekMonday(anchorDate))}`
+                  : formatFullDate(anchorDate)}
           </div>
         </div>
       </section>
@@ -517,9 +517,9 @@ export function CalendarPage() {
                   </p>
                   <p className="mt-2 text-lg font-semibold text-white">{date.getDate()}</p>
                   <div className="mt-3 space-y-2 text-sm text-slate-300">
-                    <div>Sales {row ? formatMoney0(row.sales) : "—"}</div>
-                    <div>Txn {row ? row.transactions.toLocaleString() : "—"}</div>
-                    <div>Labor {row ? `${row.laborPct.toFixed(1)}%` : "—"}</div>
+                    <div>Sales {row ? formatMoney0(row.sales) : "ï¿½"}</div>
+                    <div>Txn {row ? row.transactions.toLocaleString() : "ï¿½"}</div>
+                    <div>Labor {row ? `${row.laborPct.toFixed(1)}%` : "ï¿½"}</div>
                   </div>
                 </button>
               );

@@ -138,15 +138,15 @@ export function TransactionsPage() {
     const bestAvgTicketHour =
       hourlyPattern.filter((row) => row.transactions > 0).length > 0
         ? hourlyPattern
-            .filter((row) => row.transactions > 0)
-            .reduce((best, row) => (row.avgTicket > best.avgTicket ? row : best), hourlyPattern.filter((row) => row.transactions > 0)[0])
+          .filter((row) => row.transactions > 0)
+          .reduce((best, row) => (row.avgTicket > best.avgTicket ? row : best), hourlyPattern.filter((row) => row.transactions > 0)[0])
         : null;
 
     const weakestHour =
       hourlyPattern.filter((row) => row.transactions > 0).length > 0
         ? hourlyPattern
-            .filter((row) => row.transactions > 0)
-            .reduce((worst, row) => (row.transactions < worst.transactions ? row : worst), hourlyPattern.filter((row) => row.transactions > 0)[0])
+          .filter((row) => row.transactions > 0)
+          .reduce((worst, row) => (row.transactions < worst.transactions ? row : worst), hourlyPattern.filter((row) => row.transactions > 0)[0])
         : null;
 
     const bestDay = dailyMetrics.length > 0 ? dailyMetrics[0] : null;
@@ -236,7 +236,7 @@ export function TransactionsPage() {
         <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
           <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Peak hour</p>
           <p className="mt-3 text-3xl font-semibold text-white">
-            {summary.peakTxnHour ? formatHour(summary.peakTxnHour.hour) : "—"}
+            {summary.peakTxnHour ? formatHour(summary.peakTxnHour.hour) : "ï¿½"}
           </p>
           <p className="mt-2 text-sm text-slate-400">
             {summary.peakTxnHour ? `${summary.peakTxnHour.transactions.toLocaleString()} txn` : "No data"}
@@ -246,7 +246,7 @@ export function TransactionsPage() {
         <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
           <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Best day</p>
           <p className="mt-3 text-2xl font-semibold text-white">
-            {summary.bestDay ? summary.bestDay.date : "—"}
+            {summary.bestDay ? summary.bestDay.date : "ï¿½"}
           </p>
           <p className="mt-2 text-sm text-slate-400">
             {summary.bestDay ? `${summary.bestDay.transactions} txn` : "No data"}
@@ -271,7 +271,7 @@ export function TransactionsPage() {
                     <div>
                       <p className="text-base font-semibold text-white">{row.date}</p>
                       <p className="mt-1 text-sm text-slate-400">
-                        {row.transactions} txn · {formatMoney0(row.sales)} · Avg {formatMoney(row.avgTicket)}
+                        {row.transactions} txn ï¿½ {formatMoney0(row.sales)} ï¿½ Avg {formatMoney(row.avgTicket)}
                       </p>
                     </div>
                     <span className={`inline-flex rounded-full border px-3 py-1 text-xs ${getTagTone(tag)}`}>
@@ -300,7 +300,7 @@ export function TransactionsPage() {
                     <div>
                       <p className="text-base font-semibold text-white">{row.date}</p>
                       <p className="mt-1 text-sm text-slate-400">
-                        {row.transactions} txn · {formatMoney0(row.sales)} · Avg {formatMoney(row.avgTicket)}
+                        {row.transactions} txn ï¿½ {formatMoney0(row.sales)} ï¿½ Avg {formatMoney(row.avgTicket)}
                       </p>
                     </div>
                     <span className={`inline-flex rounded-full border px-3 py-1 text-xs ${getTagTone(tag)}`}>
@@ -318,7 +318,7 @@ export function TransactionsPage() {
         <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
           <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Peak transaction hour</p>
           <p className="mt-3 text-2xl font-semibold text-white">
-            {summary.peakTxnHour ? formatHour(summary.peakTxnHour.hour) : "—"}
+            {summary.peakTxnHour ? formatHour(summary.peakTxnHour.hour) : "ï¿½"}
           </p>
           <p className="mt-2 text-sm text-slate-400">
             {summary.peakTxnHour ? `${summary.peakTxnHour.transactions.toLocaleString()} transactions` : "No data"}
@@ -328,7 +328,7 @@ export function TransactionsPage() {
         <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
           <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Peak sales hour</p>
           <p className="mt-3 text-2xl font-semibold text-white">
-            {summary.peakSalesHour ? formatHour(summary.peakSalesHour.hour) : "—"}
+            {summary.peakSalesHour ? formatHour(summary.peakSalesHour.hour) : "ï¿½"}
           </p>
           <p className="mt-2 text-sm text-slate-400">
             {summary.peakSalesHour ? formatMoney(summary.peakSalesHour.sales) : "No data"}
@@ -338,7 +338,7 @@ export function TransactionsPage() {
         <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
           <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Best avg-ticket hour</p>
           <p className="mt-3 text-2xl font-semibold text-white">
-            {summary.bestAvgTicketHour ? formatHour(summary.bestAvgTicketHour.hour) : "—"}
+            {summary.bestAvgTicketHour ? formatHour(summary.bestAvgTicketHour.hour) : "ï¿½"}
           </p>
           <p className="mt-2 text-sm text-slate-400">
             {summary.bestAvgTicketHour ? formatMoney(summary.bestAvgTicketHour.avgTicket) : "No data"}
@@ -348,7 +348,7 @@ export function TransactionsPage() {
         <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
           <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Weakest hour</p>
           <p className="mt-3 text-2xl font-semibold text-white">
-            {summary.weakestHour ? formatHour(summary.weakestHour.hour) : "—"}
+            {summary.weakestHour ? formatHour(summary.weakestHour.hour) : "ï¿½"}
           </p>
           <p className="mt-2 text-sm text-slate-400">
             {summary.weakestHour ? `${summary.weakestHour.transactions.toLocaleString()} transactions` : "No data"}

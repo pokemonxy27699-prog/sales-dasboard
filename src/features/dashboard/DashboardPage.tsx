@@ -176,7 +176,7 @@ export function DashboardPage() {
             Files imported: {sales?.meta.fileCount ?? 0}
           </p>
           <p className="mt-1 text-sm text-slate-300">
-            Range: {sales?.meta.minDate ?? "—"} ? {sales?.meta.maxDate ?? "—"}
+            Range: {sales?.meta.minDate ?? "ï¿½"} ? {sales?.meta.maxDate ?? "ï¿½"}
           </p>
         </div>
 
@@ -190,7 +190,7 @@ export function DashboardPage() {
             Files imported: {labor?.meta.fileCount ?? 0}
           </p>
           <p className="mt-1 text-sm text-slate-300">
-            Range: {labor?.meta.minDate ?? "—"} ? {labor?.meta.maxDate ?? "—"}
+            Range: {labor?.meta.minDate ?? "ï¿½"} ? {labor?.meta.maxDate ?? "ï¿½"}
           </p>
         </div>
       </section>
