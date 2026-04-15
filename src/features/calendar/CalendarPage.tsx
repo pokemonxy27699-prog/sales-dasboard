@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { loadLaborDataset, loadSalesDataset } from "../../lib/data/storage";
+import { applyDateFilter } from "../../lib/dateFilter";
 import type { LaborDataset, SalesDataset, SalesHourlyRow } from "../../types/data";
 
 type CalendarView = "year" | "month" | "week" | "day";
@@ -199,7 +200,11 @@ function formatHourLabel(hour: number) {
   return `${normalized}:00 ${suffix}`;
 }
 
-export function CalendarPage() {
+export function CalendarPage({
+  dateFilter,
+}: {
+  dateFilter: { start: string | null; end: string | null };
+}) {
   const [sales, setSales] = useState<SalesDataset | null>(null);
   const [labor, setLabor] = useState<LaborDataset | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -240,7 +245,15 @@ export function CalendarPage() {
     };
   }, []);
 
-  const dayRows = useMemo(() => buildDayRows(sales, labor), [sales, labor]);
+  const filteredSales = useMemo(() => {
+  return sales ? { ...sales, daily: applyDateFilter(sales.daily, dateFilter) } : null;
+}, [sales, dateFilter]);
+
+const filteredLabor = useMemo(() => {
+  return labor ? { ...labor, daily: applyDateFilter(labor.daily, dateFilter) } : null;
+}, [labor, dateFilter]);
+
+const dayRows = useMemo(() => buildDayRows(filteredSales, filteredLabor), [filteredSales, filteredLabor]);
   const dayMap = useMemo(() => new Map(dayRows.map((row) => [row.date, row])), [dayRows]);
 
   const scopedRows = useMemo(() => {
@@ -290,7 +303,11 @@ export function CalendarPage() {
 
   const selectedHourlyRows = useMemo(() => {
     return [...(sales?.hourly ?? [])]
-      .filter((row) => row.date === selectedDateKey)
+      .filter((row) => {
+  if (dateFilter.start && row.date < dateFilter.start) return false;
+  if (dateFilter.end && row.date > dateFilter.end) return false;
+  return row.date === selectedDateKey;
+})
       .sort((a, b) => a.hour - b.hour);
   }, [sales, selectedDateKey]);
 
@@ -651,3 +668,4 @@ export function CalendarPage() {
     </div>
   );
 }
+

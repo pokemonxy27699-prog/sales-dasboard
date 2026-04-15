@@ -14,19 +14,26 @@ import type { NavKey } from "./types/navigation";
 
 function App() {
   const [activePage, setActivePage] = useState<NavKey>("dashboard");
+  const [dateFilter, setDateFilter] = useState<{
+    start: string | null;
+    end: string | null;
+  }>({
+    start: null,
+    end: null,
+  });
 
   const page = useMemo(() => {
     switch (activePage) {
       case "dashboard":
-        return <DashboardPage />;
+        return <DashboardPage dateFilter={dateFilter} />;
       case "data":
         return <DataImportPage />;
       case "calendar":
-        return <CalendarPage />;
+        return <CalendarPage dateFilter={dateFilter} />;
       case "transactions":
-        return <TransactionsPage />;
+        return <TransactionsPage dateFilter={dateFilter} />;
       case "labor":
-        return <LaborPage />;
+        return <LaborPage dateFilter={dateFilter} />;
       case "inventory":
         return <InventoryPage />;
       case "discounts":
@@ -36,9 +43,9 @@ function App() {
       case "ai":
         return <AiPage />;
       default:
-        return <DashboardPage />;
+        return <DashboardPage dateFilter={dateFilter} />;
     }
-  }, [activePage]);
+  }, [activePage, dateFilter]);
 
   return (
     <div className="min-h-screen">
@@ -48,7 +55,11 @@ function App() {
         </div>
 
         <main className="min-w-0 space-y-4">
-          <TopBar active={activePage} />
+          <TopBar
+            active={activePage}
+            dateFilter={dateFilter}
+            setDateFilter={setDateFilter}
+          />
           {page}
         </main>
       </div>

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { loadLaborDataset, loadSalesDataset } from "../../lib/data/storage";
+import { applyDateFilter } from "../../lib/dateFilter";
 import type { LaborDataset, SalesDataset } from "../../types/data";
 
 type LoadState = "loading" | "ready" | "empty" | "error";
@@ -11,7 +12,11 @@ function formatMoney(value: number) {
   })}`;
 }
 
-export function DashboardPage() {
+export function DashboardPage({
+  dateFilter,
+}: {
+  dateFilter: { start: string | null; end: string | null };
+}) {
   const [sales, setSales] = useState<SalesDataset | null>(null);
   const [labor, setLabor] = useState<LaborDataset | null>(null);
   const [state, setState] = useState<LoadState>("loading");
@@ -52,21 +57,40 @@ export function DashboardPage() {
     };
   }, []);
 
+  // ?? FILTERED DATA
+  const filteredSales = useMemo(() => {
+    return sales
+      ? {
+          ...sales,
+          daily: applyDateFilter(sales.daily, dateFilter),
+        }
+      : null;
+  }, [sales, dateFilter]);
+
+  const filteredLabor = useMemo(() => {
+    return labor
+      ? {
+          ...labor,
+          daily: applyDateFilter(labor.daily, dateFilter),
+        }
+      : null;
+  }, [labor, dateFilter]);
+
   const metrics = useMemo(() => {
     const totalSales =
-      sales?.daily.reduce((sum, day) => sum + day.netSalesAmt, 0) ?? 0;
+      filteredSales?.daily.reduce((sum, day) => sum + day.netSalesAmt, 0) ?? 0;
 
     const totalTransactions =
-      sales?.daily.reduce((sum, day) => sum + day.transactionQty, 0) ?? 0;
+      filteredSales?.daily.reduce((sum, day) => sum + day.transactionQty, 0) ?? 0;
 
     const totalGuests =
-      sales?.daily.reduce((sum, day) => sum + day.guestCount, 0) ?? 0;
+      filteredSales?.daily.reduce((sum, day) => sum + day.guestCount, 0) ?? 0;
 
     const totalLaborHours =
-      labor?.daily.reduce((sum, day) => sum + day.totalHours, 0) ?? 0;
+      filteredLabor?.daily.reduce((sum, day) => sum + day.totalHours, 0) ?? 0;
 
     const totalLaborCost =
-      labor?.daily.reduce((sum, day) => sum + day.totalCost, 0) ?? 0;
+      filteredLabor?.daily.reduce((sum, day) => sum + day.totalCost, 0) ?? 0;
 
     const laborPct = totalSales > 0 ? (totalLaborCost / totalSales) * 100 : 0;
 
@@ -77,10 +101,10 @@ export function DashboardPage() {
       totalLaborHours,
       totalLaborCost,
       laborPct,
-      salesDays: sales?.meta.dayCount ?? 0,
-      laborDays: labor?.meta.dayCount ?? 0,
+      salesDays: filteredSales?.daily.length ?? 0,
+      laborDays: filteredLabor?.daily.length ?? 0,
     };
-  }, [sales, labor]);
+  }, [filteredSales, filteredLabor]);
 
   if (state === "loading") {
     return (
@@ -119,7 +143,7 @@ export function DashboardPage() {
           Live imported data
         </h2>
         <p className="mt-3 text-sm leading-6 text-slate-300">
-          This dashboard is now reading from the current clean sales and labor datasets.
+          Filtered by selected date range.
         </p>
       </section>
 
@@ -161,36 +185,6 @@ export function DashboardPage() {
           <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Labor %</p>
           <p className="mt-3 text-3xl font-semibold text-white">
             {metrics.laborPct.toFixed(1)}%
-          </p>
-        </div>
-      </section>
-
-      <section className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-        <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
-          <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Sales dataset</p>
-          <h3 className="mt-2 text-xl font-semibold text-white">Coverage</h3>
-          <p className="mt-3 text-sm text-slate-300">
-            Days loaded: {metrics.salesDays.toLocaleString()}
-          </p>
-          <p className="mt-1 text-sm text-slate-300">
-            Files imported: {sales?.meta.fileCount ?? 0}
-          </p>
-          <p className="mt-1 text-sm text-slate-300">
-            Range: {sales?.meta.minDate ?? "�"} ? {sales?.meta.maxDate ?? "�"}
-          </p>
-        </div>
-
-        <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
-          <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Labor dataset</p>
-          <h3 className="mt-2 text-xl font-semibold text-white">Coverage</h3>
-          <p className="mt-3 text-sm text-slate-300">
-            Days loaded: {metrics.laborDays.toLocaleString()}
-          </p>
-          <p className="mt-1 text-sm text-slate-300">
-            Files imported: {labor?.meta.fileCount ?? 0}
-          </p>
-          <p className="mt-1 text-sm text-slate-300">
-            Range: {labor?.meta.minDate ?? "�"} ? {labor?.meta.maxDate ?? "�"}
           </p>
         </div>
       </section>
